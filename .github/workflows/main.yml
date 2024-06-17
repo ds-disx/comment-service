@@ -6,33 +6,33 @@ on:
       - main
       - dev
 jobs:
-#  build-and-push:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v3
-#
-#      - name: Set up JDK
-#        uses: actions/setup-java@v3
-#        with:
-#          java-version: "17"
-#          distribution: "adopt"
-#
-#      - name: Build with Gradle
-#        run: ./gradlew clean build -x test --no-daemon
-#
-#      - name: Run tests
-#        run: ./gradlew test
-#
-#      - name: Login to GitHub Container Registry
-#        run: docker login --username derenserce --password ${{ secrets.GH_PAT }} ghcr.io
-#
-#      - name: Build and push image
-#        run: |
-#          docker build -f src/main/docker/Dockerfile.jvm -t ghcr.io/ds-disx/comment-service .
-#          docker tag ghcr.io/ds-disx/comment-service:latest ghcr.io/ds-disx/comment-service:latest
-#          docker push ghcr.io/ds-disx/comment-service:latest
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "adopt"
+
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test --no-daemon
+
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Login to GitHub Container Registry
+        run: docker login --username derenserce --password ${{ secrets.GH_PAT }} ghcr.io
+
+      - name: Build and push image
+        run: |
+          docker build -f src/main/docker/Dockerfile.jvm -t ghcr.io/ds-disx/comment-service .
+          docker tag ghcr.io/ds-disx/comment-service:latest ghcr.io/ds-disx/comment-service:latest
+          docker push ghcr.io/ds-disx/comment-service:latest
 
   security:
     runs-on: ubuntu-latest
@@ -43,10 +43,4 @@ jobs:
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --sarif-file-output=snyk.sarif
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: snyk.sarif
 
