@@ -53,7 +53,7 @@ jobs:
         run: az aks get-credentials --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --name ${{ secrets.AZURE_CLUSTER_NAME }} --overwrite-existing
 
       - name: Rollout Restart Frontend on AKS
-        run: kubectl rollout restart deployment/disx-service
+        run: kubectl rollout restart deployment/comment-service
         continue-on-error: true 
 
   # security:
