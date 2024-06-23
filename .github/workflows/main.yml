@@ -16,12 +16,12 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: "17"
+          java-version: "21"
           distribution: "adopt"
 
       - name: Build with Gradle
         run: ./gradlew clean build -x test --no-daemon
-      
+
       - name: Run tests
         run: ./gradlew test
 
@@ -33,4 +33,36 @@ jobs:
           docker build -f src/main/docker/Dockerfile.jvm -t ghcr.io/ds-disx/comment-service .
           docker tag ghcr.io/ds-disx/comment-service:latest ghcr.io/ds-disx/comment-service:latest
           docker push ghcr.io/ds-disx/comment-service:latest
-  
+
+  update-aks:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Azure Login
+        uses: Azure/login@v2.1.0
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Set Azure Subscription
+        run: az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Get AKS credentials
+        run: az aks get-credentials --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --name ${{ secrets.AZURE_CLUSTER_NAME }} --overwrite-existing
+
+      - name: Rollout Restart Frontend on AKS
+        run: kubectl rollout restart deployment/disx-service
+        continue-on-error: true 
+
+  # security:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - name: Run Snyk to check for vulnerabilities
+  #       uses: snyk/actions/node-21@master
+  #       continue-on-error: true
+  #       env:
+  #         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+

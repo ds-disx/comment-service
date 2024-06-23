@@ -1,37 +1,34 @@
 package org.disx;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.util.UUID;
 import java.time.LocalDateTime;
 
-// @Data
-// @Entity
-// @Table(name = "comment")
-// @AllArgsConstructor
-// @NoArgsConstructor
-public class Comment {
+@Getter
+@Setter
+@Entity
+@Table(name = "comment")
+@AllArgsConstructor
+@NoArgsConstructor
+public class Comment extends PanacheEntity {
 
-    // @Id
-    // @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // private Long id;
+    @Column(name = "content", nullable = false, length = 4000)
+    private String content;
 
-    // @Column(name = "content", nullable = false, length = 4000)
-    // private String content;
+    @Column(name = "username", nullable = false, length = 280)
+    private String username;
 
-    // @Column(name = "username", nullable = false, length = 280)
-    // private String username;
+    @Column(name = "user_id", nullable = false)
+    private UUID userId;
 
-    // @Column(name = "user_id", nullable = false)
-    // private UUID userId;
+    @Column(name = "disx_id", nullable = false)
+    private Long disxId;
 
-    // @Column(name = "created_at", nullable = false)
-    // private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 }
