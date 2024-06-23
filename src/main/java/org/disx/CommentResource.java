@@ -14,9 +14,6 @@ public class CommentResource {
     @Inject
     CommentService commentService;
 
-    @Inject
-    Producer producer;
-
     @GET
     @Path("/hello")
     public String hello(){
@@ -31,9 +28,8 @@ public class CommentResource {
     @POST
     public Response saveComment(Comment comment){
         commentService.save(comment);
-        producer.send(comment);
         return Response.ok().build();
-    }
+    } 
 
     @GET
     @Path("/disx/{id}")
